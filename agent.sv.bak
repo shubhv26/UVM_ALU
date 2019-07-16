@@ -1,0 +1,30 @@
+`include "uvm_macros.svh"
+import uvm_pkg::*;
+import my_pkg::*; 
+
+class agent extends uvm_agent;
+  `uvm_component_utils(agent)
+  
+  sequencer alu_sqncr; 
+  driver alu_driv;
+  monitor alu_mon;
+  
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction: new
+  
+      //////////////   BUILD PHASE   //////////////////////////////
+    function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+          //ACTIVE 
+      alu_sqncr=sequencer::type_id::create("alu_sqncr",this);
+      alu_driv=driver::type_id::create("alu_driv",this);
+      alu_mon=monitor::type_id::create("alu_mon",this);
+    endfunction:build_phase
+  
+    //////////////   CONNECT PHASE   //////////////////////////////
+  function void connect_phase(uvm_phase phase);
+    alu_driv.seq_item_port.connect(alu_sqncr.seq_item_export);
+  endfunction: connect_phase
+  
+endclass: agent
